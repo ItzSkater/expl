@@ -1,8 +1,50 @@
 {
-  "test-pkg": {
-    "version": "1.0.0",
-    "description": "Test package",
-    "url": "https://example.com/test.AppImage",
-    "arch": ["x86_64"]
+  "obsidian": {
+    "version": "1.12.7",
+    "description": "Markdown note-taking app",
+    "url": "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.12.7/Obsidian-1.12.7-arm64.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "joplin": {
+    "version": "3.5.13",
+    "description": "Open source note-taking and to-do app",
+    "url": "https://github.com/laurent22/joplin/releases/download/v3.5.13/Joplin-3.5.13.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "appflowy": {
+    "version": "0.11.8",
+    "description": "Open source Notion alternative",
+    "url": "https://github.com/AppFlowy-IO/AppFlowy/releases/download/0.11.8/AppFlowy-0.11.8-linux-x86_64.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "logseq": {
+    "version": "0.10.15",
+    "description": "Privacy-first knowledge management",
+    "url": "https://github.com/logseq/logseq/releases/download/0.10.15/Logseq-linux-x64-0.10.15.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "upscayl": {
+    "version": "2.15.0",
+    "description": "AI image upscaler",
+    "url": "https://github.com/upscayl/upscayl/releases/download/v2.15.0/upscayl-2.15.0-linux.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "localsend": {
+    "version": "1.17.0",
+    "description": "AirDrop alternative for local network",
+    "url": "https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-linux-x86-64.AppImage",
+    "arch": [
+      "x86_64"
+    ]
   }
 }
