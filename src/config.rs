@@ -1,5 +1,5 @@
 pub const REPO_INDEX_URL: &str =
-    "https://raw.githubusercontent.com/expl-repo/index/main/index.json";
+    "https://raw.githubusercontent.com/ItzSkater/expl/main/index.json";
 
 pub const INSTALL_DIR: &str = "~/.local/bin";
 pub const CACHE_DIR: &str = "~/.cache/expl";
