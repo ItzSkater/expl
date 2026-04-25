@@ -1,0 +1,8 @@
+{
+  "test-pkg": {
+    "version": "1.0.0",
+    "description": "Test package",
+    "url": "https://example.com/test.AppImage",
+    "arch": ["x86_64"]
+  }
+}
