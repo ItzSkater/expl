@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 """
 expl package index updater
-Fetches latest AppImage releases from GitHub and updates index.json
+Fetches AppImage releases from AppImageHub and GitHub
 """
 
 import requests
 import json
 import re
-import sys
 
-PACKAGES = {
-    "bambu-studio": {
-        "github": "bambulab/BambuStudio",
-        "asset_pattern": r"Bambu_Studio_linux_ubuntu.*\.AppImage$",
-        "description": "3D printer slicer for Bambu Lab printers"
-    },
+GITHUB_API = "https://api.github.com/repos/{}/releases/latest"
+APPIMAGE_HUB_FEED = "https://appimage.github.io/feed.json"
+HEADERS = {"Accept": "application/vnd.github.v3+json"}
+
+# Пакеты с GitHub (высокий приоритет, точные паттерны)
+GITHUB_PACKAGES = {
     "obsidian": {
         "github": "obsidianmd/obsidian-releases",
         "asset_pattern": r"Obsidian-.*\.AppImage$",
@@ -50,14 +49,45 @@ PACKAGES = {
         "asset_pattern": r"LocalSend-.*-linux-x86-64\.AppImage$",
         "description": "AirDrop alternative for local network"
     },
+    "zed": {
+        "github": "zed-industries/zed",
+        "asset_pattern": r"Zed.*\.AppImage$",
+        "description": "High-performance code editor"
+    },
+    "gitbutler": {
+        "github": "gitbutlerapp/gitbutler",
+        "asset_pattern": r"GitButler.*\.AppImage$",
+        "description": "Git client for modern workflows"
+    },
+    "heroic": {
+        "github": "Heroic-Games-Launcher/HeroicGamesLauncher",
+        "asset_pattern": r"Heroic-.*\.AppImage$",
+        "description": "Epic and GOG games launcher"
+    },
+    "bottles": {
+        "github": "bottlesdevs/Bottles",
+        "asset_pattern": r"Bottles.*\.AppImage$",
+        "description": "Run Windows software on Linux"
+    },
+    "bitwarden": {
+        "github": "bitwarden/clients",
+        "asset_pattern": r"Bitwarden-.*\.AppImage$",
+        "description": "Open source password manager"
+    },
+    "flameshot": {
+        "github": "flameshot-org/flameshot",
+        "asset_pattern": r"Flameshot-.*\.AppImage$",
+            "description": "Powerful screenshot tool"
+    },
+    "syncthing": {
+        "github": "syncthing/syncthing",
+        "asset_pattern": r"syncthing-linux-amd64-.*\.tar\.gz$",
+        "description": "Continuous file synchronization"
+    },
 }
 
-GITHUB_API = "https://api.github.com/repos/{}/releases/latest"
-HEADERS = {"Accept": "application/vnd.github.v3+json"}
 
-
-def get_latest_release(repo: str, pattern: str) -> tuple[str, str] | None:
-    """Returns (version, download_url) or None"""
+def get_github_release(repo: str, pattern: str) -> tuple[str, str] | None:
     url = GITHUB_API.format(repo)
     try:
         resp = requests.get(url, headers=HEADERS, timeout=10)
@@ -75,9 +105,52 @@ def get_latest_release(repo: str, pattern: str) -> tuple[str, str] | None:
         if re.search(pattern, name, re.IGNORECASE):
             return version, asset["browser_download_url"]
 
-    print(f"  [!] No matching asset for {repo} (pattern: {pattern})")
+    print(f"  [!] No matching asset for {repo}")
     print(f"      Available: {[a['name'] for a in assets[:5]]}")
     return None
+
+
+def fetch_appimage_hub() -> dict:
+    print(":: Fetching AppImageHub catalog...")
+    try:
+        resp = requests.get(APPIMAGE_HUB_FEED, timeout=30)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
+        print(f"  [!] Failed to fetch AppImageHub: {e}")
+        return {}
+
+    packages = {}
+    for app in data.get("items", []):
+        name = app.get("name", "").lower().replace(" ", "-")
+        if not name:
+            continue
+
+        description = app.get("description", "No description")
+        links = app.get("links") or []
+        categories = app.get("categories", [])
+
+        # ищем прямую ссылку на AppImage
+        url = None
+        for link in links:
+            href = link.get("url", "")
+            if href.endswith(".AppImage"):
+                url = href
+                break
+
+        if not url:
+            continue
+
+        packages[name] = {
+            "version": "latest",
+            "description": description,
+            "url": url,
+            "arch": ["x86_64"],
+            "categories": categories
+        }
+
+    print(f"   Found {len(packages)} packages from AppImageHub")
+    return packages
 
 
 def main():
@@ -85,9 +158,16 @@ def main():
 
     index = {}
 
-    for pkg_name, pkg_info in PACKAGES.items():
+    # Сначала AppImageHub
+    hub_packages = fetch_appimage_hub()
+    index.update(hub_packages)
+
+    print()
+
+    # Потом GitHub пакеты (перезаписывают AppImageHub если есть конфликт)
+    for pkg_name, pkg_info in GITHUB_PACKAGES.items():
         print(f":: Checking {pkg_name}...")
-        result = get_latest_release(pkg_info["github"], pkg_info["asset_pattern"])
+        result = get_github_release(pkg_info["github"], pkg_info["asset_pattern"])
 
         if result:
             version, url = result

@@ -1,4 +1,70 @@
 {
+  "code_oss": {
+    "version": "latest",
+    "description": "Visual Studio Code OSS Edition",
+    "url": "zilti/code-oss.AppImage",
+    "arch": [
+      "x86_64"
+    ],
+    "categories": [
+      "Development"
+    ]
+  },
+  "emacs": {
+    "version": "latest",
+    "description": "Edit text",
+    "url": "probonopd/Emacs.AppImage",
+    "arch": [
+      "x86_64"
+    ],
+    "categories": [
+      "Development"
+    ]
+  },
+  "managerserver": {
+    "version": "latest",
+    "description": "Accounting software",
+    "url": "Manager-io/Manager.AppImage",
+    "arch": [
+      "x86_64"
+    ],
+    "categories": [
+      "Office"
+    ]
+  },
+  "smartgit": {
+    "version": "latest",
+    "description": "Git-Client",
+    "url": "ecmu/smartgit.AppImage",
+    "arch": [
+      "x86_64"
+    ],
+    "categories": [
+      "Development"
+    ]
+  },
+  "zoom": {
+    "version": "latest",
+    "description": "Zoom Video Conference",
+    "url": "probonopd/Zoom.AppImage",
+    "arch": [
+      "x86_64"
+    ],
+    "categories": [
+      "Network"
+    ]
+  },
+  "wxmedit": {
+    "version": "latest",
+    "description": "No description",
+    "url": "VinnyVynce/wxMEdit.AppImage",
+    "arch": [
+      "x86_64"
+    ],
+    "categories": [
+      "Utility"
+    ]
+  },
   "obsidian": {
     "version": "1.12.7",
     "description": "Markdown note-taking app",
@@ -43,6 +109,30 @@
     "version": "1.17.0",
     "description": "AirDrop alternative for local network",
     "url": "https://github.com/localsend/localsend/releases/download/v1.17.0/LocalSend-1.17.0-linux-x86-64.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "heroic": {
+    "version": "2.21.0",
+    "description": "Epic and GOG games launcher",
+    "url": "https://github.com/Heroic-Games-Launcher/HeroicGamesLauncher/releases/download/v2.21.0/Heroic-2.21.0-linux-x86_64.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "flameshot": {
+    "version": "13.3.0",
+    "description": "Powerful screenshot tool",
+    "url": "https://github.com/flameshot-org/flameshot/releases/download/v13.3.0/Flameshot-13.3.0.x86_64.AppImage",
+    "arch": [
+      "x86_64"
+    ]
+  },
+  "syncthing": {
+    "version": "2.0.16",
+    "description": "Continuous file synchronization",
+    "url": "https://github.com/syncthing/syncthing/releases/download/v2.0.16/syncthing-linux-amd64-v2.0.16.tar.gz",
     "arch": [
       "x86_64"
     ]
