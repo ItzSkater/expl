@@ -58,7 +58,6 @@ fn install_targz(filepath: &PathBuf, pkg: &str, install_dir: &PathBuf) {
 
     match status {
         Ok(s) if s.success() => {
-            // ищем бинарник — файл с именем пакета или любой исполняемый
             let binary = find_binary(&tmp_dir, pkg);
             match binary {
                 Some(bin) => {
@@ -83,7 +82,6 @@ fn install_deb(filepath: &PathBuf, pkg: &str, install_dir: &PathBuf) {
     let tmp_dir = PathBuf::from(format!("/tmp/expl-{}", pkg));
     fs::create_dir_all(&tmp_dir).ok();
 
-    // bsdtar умеет распаковывать deb напрямую
     let status = Command::new("bsdtar")
         .args([
             "-xf",
@@ -95,7 +93,6 @@ fn install_deb(filepath: &PathBuf, pkg: &str, install_dir: &PathBuf) {
 
     match status {
         Ok(s) if s.success() => {
-            // внутри deb есть data.tar.* — распаковываем его
             let data_tar = find_data_tar(&tmp_dir);
             match data_tar {
                 Some(tar) => {
@@ -111,7 +108,6 @@ fn install_deb(filepath: &PathBuf, pkg: &str, install_dir: &PathBuf) {
                         .status()
                         .ok();
 
-                    // ищем бинарник в usr/bin или usr/local/bin
                     let binary = find_binary_in_usr(&data_dir, pkg);
                     match binary {
                         Some(bin) => {
@@ -139,7 +135,6 @@ fn install_rpm(filepath: &PathBuf, pkg: &str, install_dir: &PathBuf) {
     let tmp_dir = PathBuf::from(format!("/tmp/expl-{}", pkg));
     fs::create_dir_all(&tmp_dir).ok();
 
-    // bsdtar умеет распаковывать rpm
     let status = Command::new("bsdtar")
         .args([
             "-xf",
@@ -172,7 +167,6 @@ fn install_rpm(filepath: &PathBuf, pkg: &str, install_dir: &PathBuf) {
 }
 
 fn find_binary(dir: &PathBuf, pkg: &str) -> Option<PathBuf> {
-    // сначала ищем файл с именем пакета
     for entry in walkdir(dir) {
         let name = entry.file_name().to_string_lossy().to_lowercase();
         if name == pkg || name == pkg.replace("-", "_") {
@@ -181,7 +175,6 @@ fn find_binary(dir: &PathBuf, pkg: &str) -> Option<PathBuf> {
             }
         }
     }
-    // потом любой исполняемый файл
     for entry in walkdir(dir) {
         if is_executable(&entry.path().to_path_buf()) {
             return Some(entry.path().to_path_buf());
@@ -239,6 +232,31 @@ fn is_executable(path: &PathBuf) -> bool {
     false
 }
 
+fn fallback_to_native(pkg: &str) {
+    let managers = [
+        ("yay", vec!["-S", "--noconfirm", pkg]),
+        ("pacman", vec!["-S", "--noconfirm", pkg]),
+    ];
+
+    for (manager, args) in &managers {
+        if Command::new("which")
+            .arg(manager)
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+        {
+            println!(":: Using {}...", manager);
+            Command::new(manager)
+                .args(args)
+                .status()
+                .ok();
+            return;
+        }
+    }
+
+    eprintln!("error: no package manager found (yay/pacman)");
+}
+
 pub async fn run(pkg: &str) {
     println!(":: Looking for {}...", pkg);
 
@@ -249,7 +267,9 @@ pub async fn run(pkg: &str) {
             match repo::find_package(pkg) {
                 Some(p) => p,
                 None => {
-                    eprintln!("error: package '{}' not found", pkg);
+                    eprintln!("error: package '{}' not found in expl index", pkg);
+                    println!(":: Trying native package manager...");
+                    fallback_to_native(pkg);
                     return;
                 }
             }
@@ -297,7 +317,6 @@ pub async fn run(pkg: &str) {
     );
     fs::create_dir_all(&install_dir).ok();
 
-    // определяем расширение для временного файла
     let ext = if package.url.ends_with(".AppImage") || package.url.ends_with(".appimage") {
         "AppImage"
     } else if package.url.ends_with(".tar.gz") || package.url.ends_with(".tgz") {
