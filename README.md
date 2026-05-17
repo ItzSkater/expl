@@ -2,7 +2,7 @@
 
 > btw i use arch
 
-A universal Linux package manager for AppImage packages. Fast, simple, no root required.
+A smart package manager for Arch-based Linux. Installs AppImage packages from its own index, falls back to `yay` or `pacman` for everything else. Fast, simple, no root required.
 
 **[Русский](#русский)**
 
@@ -10,9 +10,15 @@ A universal Linux package manager for AppImage packages. Fast, simple, no root r
 
 ## Why?
 
-Most package managers are distro-specific. `expl` works on any Linux distro (except Ubuntu and its derivatives — just install Arch) and uses AppImage format so packages run anywhere without dependencies.
+`expl` is built for Arch-based distros. It first searches its own AppImage index, and if a package isn't there — automatically falls back to `yay` or `pacman`.
 
 ## Install
+
+```bash
+yay -S expl --noconfirm
+```
+
+Or build from source:
 
 ```bash
 git clone https://github.com/ItzSkater/expl
@@ -35,30 +41,30 @@ expl -Scc          Full cache clean
 expl -V            Print version
 ```
 
+## How it works
+
+1. Searches own AppImage index
+2. If not found — syncs index and tries again
+3. If still not found — falls back to `yay` or `pacman`
+
 ## Examples
 
 ```bash
-expl -Ss cheat       # search for cheats
-expl -S cheat-cs2    # install a package
-expl -R cheat-cs2    # remove it
+expl -Ss firefox     # search
+expl -S firefox      # install (yay fallback if not in index)
+expl -S obsidian     # install from AppImage index
 expl -Syu            # update everything
 ```
 
-Packages are installed as AppImage files to `~/.local/bin/` and are ready to run immediately.
-
 ## Supported distros
 
-Any Linux distro. Except:
+Arch-based only. Tested on Arch Linux and EndeavourOS.
 
-- Ubuntu (and all its derivatives: Kubuntu, Xubuntu, Lubuntu, Ubuntu Budgie, Ubuntu Studio, Ubuntu Cinnamon, Ubuntu Unity, Ubuntu Kylin, Edubuntu)
-- Linux Mint, Pop!_OS, Zorin OS, elementary OS, KDE Neon
-- Peppermint OS, Vanilla OS, BackBox, Bodhi Linux, Linux Lite, Runtu, Voyage
+Not for Ubuntu, Debian, Fedora, or anything else. Just install Arch :)
 
-Just install Arch :)
+## Add a package to index
 
-## Package repository
-
-To add a package, submit a pull request with an entry in `index.json`:
+Submit a pull request with an entry in `index.json`:
 
 ```json
 {
@@ -88,13 +94,19 @@ To add a package, submit a pull request with an entry in `index.json`:
 
 > кстати, я использую arch
 
-Универсальный пакетный менеджер для Linux на основе AppImage. Быстрый, простой, не требует прав root.
+Умный пакетный менеджер для Arch-based Linux. Устанавливает AppImage пакеты из собственного индекса, при отсутствии — автоматически использует `yay` или `pacman`. Быстрый, простой, не требует прав root.
 
 ### Зачем?
 
-Большинство пакетных менеджеров привязаны к конкретному дистрибутиву. `expl` работает на любом Linux (кроме Ubuntu и производных — просто поставь Arch) и использует формат AppImage, поэтому пакеты запускаются везде без зависимостей.
+`expl` создан для Arch-based дистрибутивов. Сначала ищет в собственном AppImage индексе, если не нашёл — фолбэк на `yay` или `pacman`.
 
 ### Установка
+
+```bash
+yay -S expl --noconfirm
+```
+
+Или из исходников:
 
 ```bash
 git clone https://github.com/ItzSkater/expl
@@ -117,11 +129,17 @@ expl -Scc          Полная очистка кэша
 expl -V            Версия
 ```
 
+### Как работает
+
+1. Ищет в собственном AppImage индексе
+2. Если не нашёл — синхронизирует индекс и пробует снова
+3. Если всё равно не нашёл — фолбэк на `yay` или `pacman`
+
 ### Поддерживаемые дистрибутивы
 
-Любой Linux. Кроме Ubuntu и всего что на ней основано. Просто поставь Arch :)
+Только Arch-based. Протестировано на Arch Linux и EndeavourOS.
 
-Пакеты устанавливаются как AppImage файлы в `~/.local/bin/` и сразу готовы к запуску.
+Не для Ubuntu, Debian, Fedora и прочего. Просто поставь Arch :)
 
 ### Лицензия
 
