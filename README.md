@@ -12,13 +12,7 @@ A smart package manager for Arch-based Linux. Installs AppImage packages from it
 
 `expl` is built for Arch-based distros. It first searches its own AppImage index, and if a package isn't there — automatically falls back to `yay` or `pacman`.
 
-## Install
-
-```bash
-yay -S expl --noconfirm
-```
-
-Or build from source:
+Install
 
 ```bash
 git clone https://github.com/ItzSkater/expl
